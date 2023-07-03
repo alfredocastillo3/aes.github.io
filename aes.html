@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cifrado y descifrado AES</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #009696;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #04b8ff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    img {
+
+      max-width: 100%;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #a10606;
+      border-radius: 4px;
+      resize: vertical;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      background-color: #0c54d9;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .output {
+      margin-top: 20px;
+    }
+
+    .output label {
+      font-weight: bold;
+      display: block;
+    }
+
+    .output textarea {
+      width: 100%;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Cifrado y descifrado AES</h1>
+
+    <img src="imagen/demon-slayer-kimetsu-no-yaiba-the-hinokami-chronicles-20218111174875_1.jpg" alt="Imagen" />
+
+    <label for="keySize">Selecciona el tipo de la clave AES:</label>
+    <select id="keySize">
+      <option value="128">128 bits</option>
+      <option value="192">192 bits</option>
+      <option value="256">256 bits</option>
+    </select>
+
+    <label for="inputText">Texto a cifrar/descifrar:</label>
+    <textarea id="inputText" placeholder="Ingresa el texto aqui"></textarea>
+
+    <label for="key">Clave:</label>
+    <textarea id="key" placeholder="Ingresa la clave aqui"></textarea>
+
+    <button onclick="encrypt()">Cifrar</button>
+    <button onclick="decrypt()">Descifrar</button>
+
+    <div class="output">
+      <label>Resultado:</label>
+      <textarea id="outputText" readonly></textarea>
+    </div>
+
+    <div id="error" class="error"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+  <script>
+    function encrypt() {
+      clearOutput();
+
+      const keySize = document.getElementById("keySize").value;
+      const key = document.getElementById("key").value;
+      const inputText = document.getElementById("inputText").value;
+
+      if (key.length !== parseInt(keySize) / 8) {
+        showError(`La longitud de la clave debe ser de ${parseInt(keySize) / 8} caracteres.`);
+        return;
+      }
+
+      const encrypted = CryptoJS.AES.encrypt(inputText, key).toString();
+      document.getElementById("outputText").value = encrypted;
+    }
+
+    function decrypt() {
+      clearOutput();
+
+      const keySize = document.getElementById("keySize").value;
+      const key = document.getElementById("key").value;
+      const inputText = document.getElementById("inputText").value;
+
+      if (key.length !== parseInt(keySize) / 8) {
+        showError(`La longitud de la clave debe ser de ${parseInt(keySize) / 8} caracteres.`);
+        return;
+      }
+
+      try {
+        const decrypted = CryptoJS.AES.decrypt(inputText, key).toString(CryptoJS.enc.Utf8);
+        document.getElementById("outputText").value = decrypted;
+      } catch (error) {
+        showError("Error al descifrar el texto.");
+      }
+    }
+
+    function clearOutput() {
+      document.getElementById("outputText").value = "";
+      document.getElementById("error").textContent = "";
+    }
+
+    function showError(message) {
+      document.getElementById("error").textContent = message;
+    }
+  </script>
+</body>
+</html>
